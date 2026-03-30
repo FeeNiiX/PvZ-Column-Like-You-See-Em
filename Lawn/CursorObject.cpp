@@ -301,13 +301,14 @@ void CursorPreview::Draw(Graphics* g)
         Plant::DrawSeedType(g, mBoard->mCursorObject->mType, mBoard->mCursorObject->mImitaterType, DrawVariation::VARIATION_NORMAL, aOffsetX, aOffsetY);
     }
 
-    if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_COLUMN)
+    if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_COLUMN || true)
     {
         for (int y = 0; y < MAX_GRID_SIZE_Y; y++)
         {
             if (y != mGridY && mBoard->CanPlantAt(mGridX, y, aSeedType) == PlantingReason::PLANTING_OK)
             {
-                float aOffsetY = 85.0f * (y - mGridY) + PlantDrawHeightOffset(mBoard, nullptr, aSeedType, mGridX, y);
+                // bug: its off when not in roofs. 100.0f for other levels (maybe not for pool/fog)
+                float aOffsetY = 90.0f * (y - mGridY) + PlantDrawHeightOffset(mBoard, nullptr, aSeedType, mGridX, y);
                 Plant::DrawSeedType(g, mBoard->mCursorObject->mType, mBoard->mCursorObject->mImitaterType, DrawVariation::VARIATION_NORMAL, 0.0f, aOffsetY);
             }
         }
