@@ -1596,9 +1596,13 @@ void Challenge::UpdateConveyorBelt()
 	{
 		aConveyorSpeedMultiplier = 3.0f;
 	}
+	else if (mApp->IsBungeeBlitzLevel())
+	{
+		aConveyorSpeedMultiplier = 0.25f;
+	}
+	aConveyorSpeedMultiplier *= 2;
 	int aNumSeedsOnConveyor = mBoard->mSeedBank->GetNumSeedsOnConveyorBelt();
 	mConveyorBeltCounter = aConveyorSpeedMultiplier * (aNumSeedsOnConveyor > 8 ? 1000 : aNumSeedsOnConveyor > 6 ? 500 : aNumSeedsOnConveyor > 4 ? 425 : 400);
-	mConveyorBeltCounter *= 5;
 
 	TodWeightedArray aSeedPickArray[20];
 	int aSeedPickCount = 0;
@@ -1866,7 +1870,6 @@ void Challenge::UpdateConveyorBelt()
 				aSeedPick.mWeight /= 2;
 			}
 		}
-		aSeedPick.mWeight *= 5;
 	}
 
 	SeedType aSeedType = (SeedType)TodPickFromWeightedArray(aSeedPickArray, aSeedPickCount);

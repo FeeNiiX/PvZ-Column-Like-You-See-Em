@@ -8161,6 +8161,8 @@ void Zombie::HitIceTrap()
     {
         mIceTrapCounter = RandRangeInt(400, 600);
     }
+    mIceTrapCounter *= 5;
+
 
     StopZombieSound();
     if (mZombieType == ZombieType::ZOMBIE_BALLOON)

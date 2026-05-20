@@ -2510,7 +2510,10 @@ bool LawnApp::HasSeedType(SeedType theSeedType)
 	if (theSeedType >= SeedType::SEED_TWINSUNFLOWER && theSeedType <= SeedType::SEED_IMITATER)
 		return mPlayerInfo->mPurchases[theSeedType - SeedType::SEED_GATLINGPEA];
 	*/
-
+	if (theSeedType == SeedType::SEED_GATLINGPEA)
+	{
+		return mPlayerInfo->mPurchases[(int)StoreItem::STORE_ITEM_PLANT_GATLINGPEA] > 0;
+	}
 	if (theSeedType == SeedType::SEED_TWINSUNFLOWER)
 	{
 		return mPlayerInfo->mPurchases[(int)StoreItem::STORE_ITEM_PLANT_TWINSUNFLOWER] > 0;

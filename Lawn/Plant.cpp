@@ -4239,7 +4239,7 @@ void Plant::BlowAwayFliers(int theX, int theRow)
     }
 
     mApp->PlaySample(SOUND_BLOVER);
-    mBoard->mFogBlownCountDown = 4000;
+    mBoard->mFogBlownCountDown = 4000*6;
 }
 
 void Plant::KillAllPlantsNearDoom()
@@ -4976,39 +4976,41 @@ int Plant::GetCost(SeedType theSeedType, SeedType theImitaterType)
     case SeedType::SEED_ZOMBIE_DANCER:              return 350;
     case SeedType::SEED_ZOMBIE_GARGANTUAR:          return 300;
     case SeedType::SEED_ZOMBIE_IMP:                 return 50;
-    default:
-    {
-        //shout out to the big GPT for ternary in cpp explanation
-        int multiplier = 1;
-        int level = gLawnApp->mPlayerInfo ? gLawnApp->mPlayerInfo->mLevel : 1;
-        int bg = gLawnApp->mBoard ? gLawnApp->mBoard->mBackground : BackgroundType::BACKGROUND_1_DAY;
-        if (!gLawnApp->IsFirstTimeAdventureMode() || (gLawnApp->IsFirstTimeAdventureMode() && level >= 4)) {
-            multiplier = 5;
+        default:
+        {
+            int multiplier = 1;
+            int level = gLawnApp->mPlayerInfo ? gLawnApp->mPlayerInfo->mLevel : 1;
+            bool isPoolOrFog = gLawnApp->mBoard ? gLawnApp->mBoard->StageHas6Rows() : false;
+            if (isPoolOrFog) {
+                multiplier = 6;
+                if (theSeedType == SeedType::SEED_SPIKEWEED) {
+                    multiplier = 4;
+                }
+            }
+            else if (!gLawnApp->IsFirstTimeAdventureMode() || (gLawnApp->IsFirstTimeAdventureMode() && level >= 4)) {
+                multiplier = 5;
+            }
+            else if (level == 2 || level == 3) {
+                multiplier = 3;
+            }
+            else if (theSeedType == SeedType::SEED_SPIKEWEED) {
+                multiplier = 5;
+            }
+            if (theSeedType == SeedType::SEED_LILYPAD) {
+                multiplier = 2;
+            }
+            if (theSeedType == SeedType::SEED_GRAVEBUSTER) {
+                multiplier = 3;
+            }
+            if (theSeedType == SeedType::SEED_IMITATER && theImitaterType != SeedType::SEED_NONE) {
+                const PlantDefinition& aPlantDef = GetPlantDefinition(theImitaterType);
+                return aPlantDef.mSeedCost * multiplier;
+            }
+            else {
+                const PlantDefinition& aPlantDef = GetPlantDefinition(theSeedType);
+                return aPlantDef.mSeedCost * multiplier;
+            }
         }
-        else if (level == 2 || level == 3) {
-            multiplier = 3;
-        }
-        if (bg == BackgroundType::BACKGROUND_3_POOL || bg == BackgroundType::BACKGROUND_4_FOG) {
-            multiplier = 6;
-        }
-        if (theSeedType == SeedType::SEED_LILYPAD) {
-            multiplier = 2;
-        }
-        if (theSeedType == SeedType::SEED_SPIKEWEED) {
-            multiplier = 5;
-        }
-        if (theSeedType == SeedType::SEED_GRAVEBUSTER) {
-            multiplier = 3;
-        }
-        if (theSeedType == SeedType::SEED_IMITATER && theImitaterType != SeedType::SEED_NONE) {
-            const PlantDefinition& aPlantDef = GetPlantDefinition(theImitaterType);
-            return aPlantDef.mSeedCost * multiplier;
-        }
-        else {
-            const PlantDefinition& aPlantDef = GetPlantDefinition(theSeedType);
-            return aPlantDef.mSeedCost * multiplier;
-        }
-    }
     }
 }
 
@@ -5038,7 +5040,7 @@ SexyString Plant::GetToolTip(SeedType theSeedType)
 
 int Plant::GetRefreshTime(SeedType theSeedType, SeedType theImitaterType)
 {
-    int multiplier = 2;
+    int multiplier = 1;
     if (Challenge::IsZombieSeedType(theSeedType))
     {
         return 0;
@@ -5046,13 +5048,6 @@ int Plant::GetRefreshTime(SeedType theSeedType, SeedType theImitaterType)
     if (theSeedType == SeedType::SEED_PUFFSHROOM) {
         multiplier = 5;
     }
-    if (theSeedType == SeedType::SEED_LILYPAD) {
-        multiplier = 2;
-    }
-    if (theSeedType == SeedType::SEED_GRAVEBUSTER) {
-        multiplier = 3;
-    }
-
     if (theSeedType == SeedType::SEED_IMITATER && theImitaterType != SeedType::SEED_NONE)
     {
         const PlantDefinition& aPlantDef = GetPlantDefinition(theImitaterType);

@@ -1413,9 +1413,15 @@ bool Coin::MouseHitTest(int theX, int theY, HitResult* theHitResult)
         aExtraClickHeight = 30;
         aExtraClickSize = 15;
     }
-    if (mType == CoinType::COIN_SUN)
+    if (mType == CoinType::COIN_SUN || 
+        mType == CoinType::COIN_SILVER || 
+        mType == CoinType::COIN_GOLD || 
+        mType == CoinType::COIN_DIAMOND || 
+        mType == CoinType::COIN_SMALLSUN || 
+        mType == CoinType::COIN_LARGESUN
+        )
     {
-        aExtraClickSize = 15;
+        aExtraClickSize = 1500;
     }
 
     bool aCanHitCoin = true;

@@ -716,11 +716,7 @@ void Board::PickZombieWaves()
 		{
 			aZombiePoints *= 2;
 		}
-		else if (HasConveyorBeltSeedBank())
-		{
-			aZombiePoints *= 3;
-		}
-		aZombiePoints *= 2;
+		aZombiePoints *= 3;
 
 		if (aIntroZombieType != ZombieType::ZOMBIE_INVALID && aIntroZombieType != ZombieType::ZOMBIE_DUCKY_TUBE)
 		{
@@ -1246,6 +1242,7 @@ void Board::InitZombieWaves()
 	{
 		mZombieCountDown = ZOMBIE_COUNTDOWN_FIRST_WAVE;
 	}
+	mZombieCountDown *= 4;
 
 	mZombieHealthWaveStart = 0;
 	mLastBungeeWave = 0;
@@ -1396,14 +1393,14 @@ void Board::InitLevel()
 	{
 		mSunMoney = 150;
 	}
-	else if (mBackground == BackgroundType::BACKGROUND_3_POOL || mBackground == BackgroundType::BACKGROUND_4_FOG)
-	{
-		mSunMoney = 300;
-	}
 	else
 	{
-		mSunMoney = 250;
+		mSunMoney = 50;
 	}
+	if (StageHas6Rows())
+		mSunMoney *= 6;
+	else
+		mSunMoney *= 5;
 
 	memset(mRowPickingArray, 0, sizeof(mRowPickingArray));
 	for (int aRow = 0; aRow < MAX_GRID_SIZE_Y; aRow++)
@@ -3848,31 +3845,85 @@ void Board::MouseDownWithPlant(int x, int y, int theClickCount)
 		TOD_ASSERT();
 	}
 
-	if (mApp->mGameMode == GameMode::GAMEMODE_CHALLENGE_COLUMN || true)
-	{
-		for (int aRow = 0; aRow < MAX_GRID_SIZE_Y; aRow++)
-		{
-			if (aRow == aGridY || CanPlantAt(aGridX, aRow, aPlantingSeedType) != PlantingReason::PLANTING_OK)
-				continue;
 
-			if (aPlantingSeedType == SeedType::SEED_WALLNUT || aPlantingSeedType == SeedType::SEED_TALLNUT)
+	for (int aRow = 0; aRow < MAX_GRID_SIZE_Y; aRow++)
+	{
+		if (aRow == aGridY || CanPlantAt(aGridX, aRow, aPlantingSeedType) != PlantingReason::PLANTING_OK)
+			continue;
+
+		if (aPlantingSeedType == SeedType::SEED_WALLNUT || aPlantingSeedType == SeedType::SEED_TALLNUT)
+		{
+			aNormalPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_NORMAL_POSITION);
+			if (aNormalPlant && aNormalPlant->mSeedType == aPlantingSeedType)
 			{
-				aNormalPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_NORMAL_POSITION);
-				if (aNormalPlant && aNormalPlant->mSeedType == aPlantingSeedType)
-				{
-					aNormalPlant->Die();
-				}
+				aNormalPlant->Die();
 			}
-			if (aPlantingSeedType == SeedType::SEED_PUMPKINSHELL)
-			{
-				aPumpkinPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_PUMPKIN);
-				if (aPumpkinPlant && aPumpkinPlant->mSeedType == SeedType::SEED_PUMPKINSHELL)
-				{
-					aPumpkinPlant->Die();
-				}
-			}
-			AddPlant(aGridX, aRow, mCursorObject->mType, mCursorObject->mImitaterType);
 		}
+		if (aPlantingSeedType == SeedType::SEED_PUMPKINSHELL)
+		{
+			aPumpkinPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_PUMPKIN);
+			if (aPumpkinPlant && aPumpkinPlant->mSeedType == SeedType::SEED_PUMPKINSHELL)
+			{
+				aPumpkinPlant->Die();
+			}
+		}
+		if (aPlantingSeedType == SeedType::SEED_GATLINGPEA)
+		{
+			aNormalPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_NORMAL_POSITION);
+			if (aNormalPlant && aNormalPlant->mSeedType == SeedType::SEED_REPEATER)
+			{
+				aNormalPlant->Die();
+			}
+		}
+		if (aPlantingSeedType == SeedType::SEED_TWINSUNFLOWER)
+		{
+			aNormalPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_NORMAL_POSITION);
+			if (aNormalPlant && aNormalPlant->mSeedType == SeedType::SEED_SUNFLOWER)
+			{
+				aNormalPlant->Die();
+			}
+		}
+		if (aPlantingSeedType == SeedType::SEED_WINTERMELON)
+		{
+			aNormalPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_NORMAL_POSITION);
+			if (aNormalPlant && aNormalPlant->mSeedType == SeedType::SEED_MELONPULT)
+			{
+				aNormalPlant->Die();
+			}
+		}
+		if (aPlantingSeedType == SeedType::SEED_GLOOMSHROOM)
+		{
+			aNormalPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_NORMAL_POSITION);
+			if (aNormalPlant && aNormalPlant->mSeedType == SeedType::SEED_FUMESHROOM)
+			{
+				aNormalPlant->Die();
+			}
+		}
+		if (aPlantingSeedType == SeedType::SEED_GOLD_MAGNET)
+		{
+			aNormalPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_NORMAL_POSITION);
+			if (aNormalPlant && aNormalPlant->mSeedType == SeedType::SEED_MAGNETSHROOM)
+			{
+				aNormalPlant->Die();
+			}
+		}
+		if (aPlantingSeedType == SeedType::SEED_SPIKEROCK)
+		{
+			aNormalPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_NORMAL_POSITION);
+			if (aNormalPlant && aNormalPlant->mSeedType == SeedType::SEED_SPIKEWEED)
+			{
+				aNormalPlant->Die();
+			}
+		}
+		if (aPlantingSeedType == SeedType::SEED_COBCANNON)
+		{
+			aNormalPlant = GetTopPlantAt(aGridX, aRow, PlantPriority::TOPPLANT_ONLY_NORMAL_POSITION);
+			if (aNormalPlant && aNormalPlant->mSeedType == SeedType::SEED_KERNELPULT)
+			{
+				aNormalPlant->Die();
+			}
+		}
+		AddPlant(aGridX, aRow, mCursorObject->mType, mCursorObject->mImitaterType);
 	}
 
 	if (mTutorialState == TutorialState::TUTORIAL_LEVEL_1_PLANT_PEASHOOTER)
@@ -5365,7 +5416,6 @@ void Board::UpdateZombieSpawning()
 				mZombieCountDown = ZOMBIE_COUNTDOWN + Rand(ZOMBIE_COUNTDOWN_RANGE);
 			}
 		}
-		mZombieCountDown *= 5;
 		mZombieCountDownStart = mZombieCountDown;
 	}
 }
@@ -9580,7 +9630,7 @@ void Board::DropLootPiece(int thePosX, int thePosY, int theDropFactor)
 		}
 	}
 
-	aDropHit *= 2;
+	aDropHit *= 3;
 
 	if (mApp->mPlayingQuickplay)
 		return;
